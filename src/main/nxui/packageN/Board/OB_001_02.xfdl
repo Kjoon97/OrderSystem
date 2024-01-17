@@ -70,7 +70,7 @@
       </Layout>
     </Layouts>
     <Script type="xscript5.1"><![CDATA[
-this.OB_001_01_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+this.OB_001_01_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)     
 {
 	alert("onload 함수 실행");
 }; 
