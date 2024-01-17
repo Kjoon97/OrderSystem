@@ -14,11 +14,20 @@
        		해당 데이터소스를 사용하는 SqlMapClient 혹은 SqlSession에 데이터소스를 지정해서 사용해야 한다. 
      -->
      
-     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
- 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
- 		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl3" />
- 		<property name="username" value="MAN"/>
- 		<property name="password" value="Man!234"/>
+	<bean id="dataSourceSpied" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+     	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+     	<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl3" />
+     	<property name="username" value="MAN"/>
+     	<property name="password" value="Man!234"/>
+	</bean>
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied"/>
+		<property name = "logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE"/>
+				<property name="sqlPrefix" value="SQL:::"/>
+			</bean>
+		</property>
 	</bean>
      
      
