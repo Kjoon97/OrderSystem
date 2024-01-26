@@ -2,7 +2,7 @@
 <license version="1.2">
 	<product>
 		<name>Nexacro&#32;N</name>
-		<version>21</version>
+		<version>24</version>
 		<function>Runtime,WebBrowser</function>
 	</product>
 	<customer>
@@ -12,8 +12,8 @@
 		<targetPlatform>Windows,WindowsRT,macOS,iOS,Android</targetPlatform>
 	</customer>
 	<date>
-		<activation>2022-05-01</activation>
+		<activation>2024-01-01</activation>
 		<term unit="month">2</term>
 	</date>
-	<key>X12YUMCK8X1TP1UFW1264152NJWTWJ1R2</key>
+	<key>5ZWT75D67XESKYH2BMXBE11DTDGVG1E27</key>
 </license>

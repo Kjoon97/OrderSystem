@@ -1,5 +1,6 @@
 package com.nexacro.orderBoard.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,13 @@ public class UidapterBoardServiceImpl implements UidapterBoardService {
 
 	@Autowired
 	private SqlSessionTemplate sqlSession;
+	
+	@Override
+	public ArrayList<Map<String, Object>> selectCommonCode(Map<String, Object> ds_search) {
+		// TODO Auto-generated method stub
+		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);
+		return mapper.selectCommonCode(ds_search);
+	}
 
 	@Override
 	public List<Board> retrieve_datalist(Board board) {

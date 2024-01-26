@@ -1,5 +1,6 @@
 package com.nexacro.orderBoard.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ import com.nexacro.orderBoard.object.Board;
  *      최초작성
  */
 public interface UidapterBoardService {
+	
+	ArrayList<Map<String,Object>> selectCommonCode(Map<String,Object> ds_search);
 
 	List<Map<String, Object>> retrieve_datalist_map(Map<String, String> board);
 

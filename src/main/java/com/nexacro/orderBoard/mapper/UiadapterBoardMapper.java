@@ -1,5 +1,6 @@
 package com.nexacro.orderBoard.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,9 @@ import com.nexacro.orderBoard.object.Board;
  */
 @Mapper
 public interface UiadapterBoardMapper {
+	
+	public ArrayList<Map<String,Object>> selectCommonCode(Map<String,Object> ds_search);
+	
 	public List<Board> retrieve_datalist(Board board);
 
 	public List<Map<String, Object>> retrieve_datalist_map(Map<String, String> board);

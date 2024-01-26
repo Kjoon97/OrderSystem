@@ -19,7 +19,14 @@
             }
             
             // Object(Dataset, ExcelExportObject) Initialize
+            obj = new Dataset("ds_searchCombo", this);
+            obj._setContents("<ColumnInfo><Column id=\"CD_VAL\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
 
+
+            obj = new Dataset("ds_ordStatCombo", this);
+            obj._setContents("<ColumnInfo><Column id=\"CD_VAL1\" type=\"STRING\" size=\"256\"/><Column id=\"CD_NM1\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
             
             // UI Components Initialize
             obj = new Static("sta02","104","1","841","85",null,null,null,null,null,null,this);
@@ -69,12 +76,10 @@
 
             obj = new Combo("cbo_ordStat","420","50","110","25",null,null,null,null,null,null,this);
             obj.set_taborder("6");
-            obj.set_codecolumn("codecolumn");
-            obj.set_datacolumn("datacolumn");
+            obj.set_codecolumn("CD_VAL1");
+            obj.set_datacolumn("CD_NM1");
             obj.set_displaynulltext("선택");
-            var cbo_ordStat_innerdataset = new nexacro.NormalDataset("cbo_ordStat_innerdataset", obj);
-            cbo_ordStat_innerdataset._setContents("<ColumnInfo><Column id=\"codecolumn\" size=\"256\"/><Column id=\"datacolumn\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"codecolumn\">A</Col><Col id=\"datacolumn\">주문대기</Col></Row><Row><Col id=\"codecolumn\">B</Col><Col id=\"datacolumn\">주문접수</Col></Row><Row><Col id=\"codecolumn\">C</Col><Col id=\"datacolumn\">주문취소</Col></Row><Row><Col id=\"codecolumn\">D</Col><Col id=\"datacolumn\">설치완료</Col></Row><Row><Col id=\"codecolumn\">E</Col><Col id=\"datacolumn\">설치취소</Col></Row></Rows>");
-            obj.set_innerdataset(cbo_ordStat_innerdataset);
+            obj.set_innerdataset("ds_ordStatCombo");
             obj.set_text("선택");
             obj.set_value("");
             obj.set_index("-1");
@@ -157,16 +162,42 @@
         
         // User Script
         this.registerScript("OB_001.xfdl", function() {
+        this.OB_001_onload = function(obj,e)
+        {
+        //this는 화면 전체를 의미한다.
+        	//alert("onload 함수 실행");
+
+        	//OB_001.xfml이 화면이 로드될 때 검색 조건의 주문 상태 콤보박스를 초기화 시켜주기 위해.
+        	//서버에 요청을 하기 전에 서버로 전달해줘야할 인자값은 뭐가 있을지 생각을 해봐야함.
+        	//주문 상태값만을 불러오기 위해서는 TB_CD_MST 테이블 WEHRE절에 CD_VAL = '001'이라는 조건을 걸어줘야한다.
+        	//따라서 DATASET에는 001이라는 값을 넣어 서버로 전달.
+
+        	//ds_searchcombo 데이터셋을 생성하고 서버로 전달할 인자값을 추가해보자.
+        	this.ds_searchCombo.clearData();   //데이터 셋을 초기화
+        	this.ds_searchCombo.addRow();      //데이터 셋 값을 세팅하기 위해 1줄의 row를 추가함.
+        	this.ds_searchCombo.setColumn(0, "CD_VAL", "001");   // 추가된 0번째 "CD_VAL"컬럼에 "001"을 넣자.
+
+        	//서버로 데이터를 전송한다. 그 전에 필요한 값들을 세팅한다.
+        	var strSvcId = "selectCommonCode";      //넥사크로에서 트랜잭션을 구분하기 위한 id 값. 이 id 값을 차후 fncallback(후처리) 함수에서 쓰인다.
+            var strSvcUrl = "selectCommonCode.do";  //java controller에서 이 주소를 식별하여 요청을 처리한다.
+        	var inData = "ds_search=ds_searchCombo";  // ds_searchCombo(위에서 만든 데이터셋- 프론트엔드)을 ds_search(서버의 맵 객체)에 넣는다.
+        	                                         // 서버측(.java)에도 ds_search 데이터 셋명과 반드시 동일하게 명명해야함.
+        	var outData = "ds_ordStatCombo=ds_commonCode";  //서버로부터 값을 전달받을 데이터 셋을 세팅하는 것. 서버 데이터셋(dsCommonCode)
+        	var strAvg = "";                          //데이터셋이 아닌 값을 보낼때 쓰는 필드지만, 데이터 셋을 쓰는 것으로 통일하자.
+        	var callBackFnc ="fnCallback";            // 서버로부터 값을 받은 이후 프론트에서 이행할 작업 코드를 fnCallback 함수에서 작성한다.
+
+        	this.gfnTransaction(strSvcId,
+        						strSvcUrl,
+        						inData,
+        						outData,
+        						strAvg,
+        						callBackFnc);     // 서버로 요청이 감.
+        };
+
         this.btn_selectOrd_onclick = function(obj,e)
         {
         	alert("주문리스트 조회");
-        };
 
-        this.OB_001_onload = function(obj,e)
-        {
-        	alert("onload 함수 실행");
-
-        	//검색 조건의 주문 상태 콤보박스 초기화.
         };
 
         this.btn_regOrd_onclick = function(obj,e)
@@ -194,6 +225,27 @@
         	alert("onchanged 함수 실행");
         };
 
+        this.cbo_ordStat_onitemchanged = function(obj,e)
+        {
+
+        };
+
+        /**********************************************************************************
+        * CallBack Function (서버 수신 후 후처리 영역)
+        *************************************************************************************/
+        this.fnCallback = function(svcID, errorCode, errorMsg)
+        {
+        	switch(svcID)  //svcID: 트랜잭션 아이디.
+        	{
+        		case "selectCommonCode":
+        			this.ds_ordStatCombo.insertRow(0);  //0번째 row에 추가하면 순차적으로 뒤로 밀림.
+        			this.ds_ordStatCombo.setColumn(0,"CD_VAL1","");
+        			this.ds_ordStatCombo.setColumn(0,"CD_NM1","전체");
+        			break;
+        	}
+
+        }
+
         });
         
         // Regist UI Components Event
@@ -205,6 +257,7 @@
             this.btn_regOrd.addEventHandler("onclick",this.btn_regOrd_onclick,this);
             this.chk_companyyn.addEventHandler("onchanged",this.chk_companyyn_onchanged,this);
             this.sta01_00.addEventHandler("onclick",this.sta01_00_onclick,this);
+            this.cbo_ordStat.addEventHandler("onitemchanged",this.cbo_ordStat_onitemchanged,this);
             this.sta01_01.addEventHandler("onclick",this.sta01_01_onclick,this);
             this.rdo_custGb.addEventHandler("onitemchanged",this.rdo_cust_onitemchanged,this);
             this.sta01_00_00.addEventHandler("onclick",this.sta01_00_00_onclick,this);
