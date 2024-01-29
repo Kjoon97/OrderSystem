@@ -38,6 +38,13 @@ public class UidapterBoardServiceImpl implements UidapterBoardService {
 	private SqlSessionTemplate sqlSession;
 	
 	@Override
+	public ArrayList<Map<String, Object>> selectOrdList(Map<String, Object> ds_searchList) {
+		// TODO Auto-generated method stub
+		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);
+		return mapper.selectOrdList(ds_searchList);
+	}
+	
+	@Override
 	public ArrayList<Map<String, Object>> selectCommonCode(Map<String, Object> ds_search) {
 		// TODO Auto-generated method stub
 		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);

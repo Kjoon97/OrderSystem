@@ -27,6 +27,16 @@
             obj = new Dataset("ds_ordStatCombo", this);
             obj._setContents("<ColumnInfo><Column id=\"CD_VAL1\" type=\"STRING\" size=\"256\"/><Column id=\"CD_NM1\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("ds_searchList", this);
+            obj._setContents("<ColumnInfo><Column id=\"ORD_NO\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_NM\" type=\"STRING\" size=\"256\"/><Column id=\"COMP_YN\" type=\"STRING\" size=\"256\"/><Column id=\"ORD_STAT_CD\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_GBCD\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("ds_list", this);
+            obj._setContents("<ColumnInfo><Column id=\"ORD_NO\" type=\"STRING\" size=\"256\"/><Column id=\"ORD_STAT_NM\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_NO\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_NM\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_GBCD_NM\" type=\"STRING\" size=\"256\"/><Column id=\"PHONE\" type=\"STRING\" size=\"256\"/><Column id=\"ADDR\" type=\"STRING\" size=\"256\"/><Column id=\"ITEM_NM\" type=\"STRING\" size=\"256\"/><Column id=\"REG_DT\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
             
             // UI Components Initialize
             obj = new Static("sta02","104","1","841","85",null,null,null,null,null,null,this);
@@ -62,7 +72,7 @@
             obj.set_font("bold 14px/normal \"Gulim\"");
             this.addChild(obj.name, obj);
 
-            obj = new CheckBox("chk_companyyn","442","17","36","24",null,null,null,null,null,null,this);
+            obj = new CheckBox("chk_cmpYn","442","17","36","24",null,null,null,null,null,null,this);
             obj.set_taborder("4");
             obj.set_text("");
             this.addChild(obj.name, obj);
@@ -111,7 +121,8 @@
 
             obj = new Grid("grd_ordList","5","126","826","282",null,null,null,null,null,null,this);
             obj.set_taborder("10");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"83\"/><Column size=\"78\"/><Column size=\"68\"/><Column size=\"79\"/><Column size=\"82\"/><Column size=\"102\"/><Column size=\"158\"/><Column size=\"90\"/><Column size=\"85\"/></Columns><Rows><Row size=\"42\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell text=\"주문번호\"/><Cell col=\"1\" text=\"주문상태\"/><Cell col=\"2\" text=\"고객번호\"/><Cell col=\"3\" text=\"고객명\"/><Cell col=\"4\" text=\"고객구분\"/><Cell col=\"5\" text=\"전화번호\"/><Cell col=\"6\" text=\"주소\"/><Cell col=\"7\" text=\"상품명\"/><Cell col=\"8\" text=\"주문일시\"/></Band><Band id=\"body\"><Cell/><Cell col=\"1\"/><Cell col=\"2\"/><Cell col=\"3\"/><Cell col=\"4\"/><Cell col=\"5\"/><Cell col=\"6\"/><Cell col=\"7\"/><Cell col=\"8\"/></Band></Format></Formats>");
+            obj.set_binddataset("ds_list");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"94\"/><Column size=\"66\"/><Column size=\"65\"/><Column size=\"68\"/><Column size=\"62\"/><Column size=\"87\"/><Column size=\"97\"/><Column size=\"109\"/><Column size=\"177\"/></Columns><Rows><Row size=\"42\" band=\"head\"/><Row size=\"32\"/></Rows><Band id=\"head\"><Cell text=\"주문번호\"/><Cell col=\"1\" text=\"주문상태\"/><Cell col=\"2\" text=\"고객번호\"/><Cell col=\"3\" text=\"고객명\"/><Cell col=\"4\" text=\"고객구분\"/><Cell col=\"5\" text=\"전화번호\"/><Cell col=\"6\" text=\"주소\"/><Cell col=\"7\" text=\"상품명\"/><Cell col=\"8\" text=\"주문일시\" calendardateformat=\"yyyy-MM-dd HH:mm:ss\"/></Band><Band id=\"body\"><Cell text=\"bind:ORD_NO\" textAlign=\"center\"/><Cell col=\"1\" text=\"bind:ORD_STAT_NM\" textAlign=\"center\"/><Cell col=\"2\" text=\"bind:CUST_NO\" textAlign=\"center\"/><Cell col=\"3\" text=\"bind:CUST_NM\" textAlign=\"center\"/><Cell col=\"4\" text=\"bind:CUST_GBCD_NM\" textAlign=\"center\"/><Cell col=\"5\" text=\"bind:PHONE\" textAlign=\"center\"/><Cell col=\"6\" text=\"bind:ADDR\" textAlign=\"center\"/><Cell col=\"7\" text=\"bind:ITEM_NM\" textAlign=\"center\"/><Cell col=\"8\" text=\"bind:REG_DT\" textAlign=\"center\" calendardateformat=\"yyyy-MM-dd HH:mm:ss\"/></Band></Format></Formats>");
             this.addChild(obj.name, obj);
 
             obj = new Static("sta01_02","120","49","70","26",null,null,null,null,null,null,this);
@@ -196,8 +207,45 @@
 
         this.btn_selectOrd_onclick = function(obj,e)
         {
-        	alert("주문리스트 조회");
+        	//alert("주문리스트 조회");
+        	//1. 조회 버튼을 클릭했을 때 우리는 db에서 데이터를 조회하여 값을 그리드에 뿌려줘야한다.
+        	//그렇다면 프론트에서 우리는 어떤 값들을 만들어서 서버로 보내줘야할까?
+        	//바로 검색조건에 있는 값들을 담아서 서버로 보내줘야한다.
+        	//이 값들을 주문 리스트 조회 시 where 절에 넣어줘야 알맞은 데이터를 가져올 수 있다.
+        	//따라서 검색 조건들을 ds_searchList 라는 데이터 셋을 만들어서 값을 세팅해주는 작업을 해보자.
+        	this.ds_searchList.clearData();
+        	this.ds_searchList.addRow();
+        	this.ds_searchList.setColumn(0, "ORD_NO", this.edt_ordNo.value);
+        	this.ds_searchList.setColumn(0, "CUST_NM", this.edt_custNm.value);
+        	this.ds_searchList.setColumn(0, "COMP_YN", this.chk_cmpYn.value);
+        	this.ds_searchList.setColumn(0, "ORD_STAT_CD", this.cbo_ordStat.value);
+        	this.ds_searchList.setColumn(0, "CUST_GBCD", this.rdo_custGb.value);
 
+        	trace("로그 남기기");   //넥사크로에서 로그 남기는 방법.
+        	trace("ORD_NO : " + this.ds_searchList.getColumn(0, "ORD_NO"));
+        	trace("CUST_NM : "+ this.ds_searchList.getColumn(0, "CUST_NM"));
+        	trace("COMP_YN : "+ this.ds_searchList.getColumn(0, "COMP_YN"));
+        	trace("ORD_STAT_CD : "+ this.ds_searchList.getColumn(0, "ORD_STAT_CD"));
+        	trace("CUST_GBCD : "+ this.ds_searchList.getColumn(0, "CUST_GBCD"));
+
+        	//2.서버에서 가져온 주문 리스트를 그리드에 보여줘야한다,
+        	//앞서 그리드에 뼈대만 만들어줬다. ds_list라는 데이터 셋을 만들어 바인딩함으로써
+        	//그리드가 서버로부터 가져오는 ds_list값을 유기적으로 보여주도록 만들어줄 것이다.
+
+        	//3. this.gfnTransaction함수를 써서 서버로 데이터를 전송하고 받아보겠다.
+        	var strSvcId = "selectOrdList";
+            var strSvcUrl = "selectOrdList.do";
+        	var inData = "ds_searchList=ds_searchList"; //(서버의)ds_searchList(좌)에 (프론트 데이터셋)ds_searchList(우)을 넣자.
+        	var outData = "ds_list=ds_list";            //서버의 ds_list(우)를 프론트데이터셋 ds_list(좌)에 넣기. 서버로부터의 받은 값을 프론트에 넣기.
+        	var strAvg = "";
+        	var callBackFnc ="fnCallback";
+
+        	this.gfnTransaction(strSvcId,
+        						strSvcUrl,
+        						inData,
+        						outData,
+        						strAvg,
+        						callBackFnc);     // 서버로 요청이 감.
         };
 
         this.btn_regOrd_onclick = function(obj,e)
@@ -255,7 +303,7 @@
             this.sta02.addEventHandler("onclick",this.sta02_onclick,this);
             this.sta00.addEventHandler("onclick",this.sta00_onclick,this);
             this.btn_regOrd.addEventHandler("onclick",this.btn_regOrd_onclick,this);
-            this.chk_companyyn.addEventHandler("onchanged",this.chk_companyyn_onchanged,this);
+            this.chk_cmpYn.addEventHandler("onchanged",this.chk_companyyn_onchanged,this);
             this.sta01_00.addEventHandler("onclick",this.sta01_00_onclick,this);
             this.cbo_ordStat.addEventHandler("onitemchanged",this.cbo_ordStat_onitemchanged,this);
             this.sta01_01.addEventHandler("onclick",this.sta01_01_onclick,this);

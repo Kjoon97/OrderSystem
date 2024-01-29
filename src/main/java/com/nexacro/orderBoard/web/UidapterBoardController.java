@@ -49,7 +49,18 @@ public class UidapterBoardController {
 
 	@Autowired(required = true)
 	private UidapterBoardService uidapterSampleService;
-
+	
+	@RequestMapping(value = "/orderBoard/selectOrdList.do")
+	public NexacroResult selectOrdList(@ParamDataSet(name="ds_searchList") Map<String, Object> ds_searchList) throws NexacroException {   //001이라는 값을 담은 ds_search
+		NexacroResult result = new NexacroResult();
+		
+		ArrayList<Map<String,Object>> ds_list = new ArrayList<Map<String,Object>>();
+		
+		ds_list = uidapterSampleService.selectOrdList(ds_searchList);
+		
+		result.addDataSet("ds_list", ds_list);
+		return result;
+	}
 	
 	@RequestMapping(value = "/orderBoard/selectCommonCode.do")
 	public NexacroResult selectCommonCode(@ParamDataSet(name="ds_search") Map<String, Object> ds_search) throws NexacroException {   //001이라는 값을 담은 ds_search
