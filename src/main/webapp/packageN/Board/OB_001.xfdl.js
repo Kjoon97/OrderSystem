@@ -250,7 +250,14 @@
 
         this.btn_regOrd_onclick = function(obj,e)
         {
-        	alert("주문 등록 팝업 오픈");
+        	var oArg ={}; // 팝업을 열때 부모 창(주문게시판)의 데이터를 자식창(팝업창)에게 가져갈때 사용하는 변수.
+        	              // 주문 등록시에는 가져갈 데이터가 없으므로, 공란으로 지정하겠습니다.
+        	//alert("주문 등록 팝업 오픈");
+        	//sPopupCallBack - 후처리 함수
+        	//oOption - 팝업이 열릴 위치, 속성 값들을 입력.top,left 값을 지정하지 않으면 자동으로 가운데 정렬해 줍니다.
+        	var oOption = {};
+        	var sPopupCallBack = "fnPopupCallback"; //팝업창을 닫을 때 후처리를 하기 위한 함수를 지정한다.
+        	this.gfnOpenPopup("popup","Board::OB_001_01.xfdl", oArg, sPopupCallBack, oOption);
         };
 
         this.btn_updOrd_onclick = function(obj,e)

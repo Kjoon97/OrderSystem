@@ -5,6 +5,12 @@
 <mapper namespace="com.nexacro.orderBoard.mapper.UiadapterBoardMapper">
 	
     <!--  POJO -->
+    <select id="selectItemList" resultType="java.util.Map">
+    	SELECT ITEM_CD AS CD_VAL1
+	  		  ,ITEM_NM AS CD_NM1
+	  	FROM TB_ITEM
+    </select>
+    
     <select id="selectOrdList" parameterType="java.util.Map" resultType="java.util.Map">
             SELECT ORD.ORD_NO                             AS ORD_NO
      			 , FN_CODE_NM('001',ORD.ORD_STAT_CD)      AS ORD_STAT_NM
