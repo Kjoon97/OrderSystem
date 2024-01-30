@@ -30,6 +30,11 @@
             obj = new Dataset("ds_itemCombo", this);
             obj._setContents("<ColumnInfo><Column id=\"CD_VAL1\" type=\"STRING\" size=\"256\"/><Column id=\"CD_NM1\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("ds_regOrd", this);
+            obj._setContents("<ColumnInfo><Column id=\"CUST_NM\" type=\"STRING\" size=\"256\"/><Column id=\"PHONE\" type=\"STRING\" size=\"256\"/><Column id=\"BIR_BIZ_NO\" type=\"STRING\" size=\"256\"/><Column id=\"ADDR\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_GBCD\" type=\"STRING\" size=\"256\"/><Column id=\"ITEM_CD\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
             
             // UI Components Initialize
             obj = new Static("sta01_02","18","24","100","32",null,null,null,null,null,null,this);
@@ -105,7 +110,7 @@
             obj.set_index("-1");
             this.addChild(obj.name, obj);
 
-            obj = new Combo("cbo_custGb","159","150","142","25",null,null,null,null,null,null,this);
+            obj = new Combo("cbo_custGbNm","159","150","142","25",null,null,null,null,null,null,this);
             obj.set_taborder("11");
             obj.set_innerdataset("ds_custGbCombo");
             obj.set_codecolumn("CD_VAL1");
@@ -161,12 +166,47 @@
 
         this.btn_regOrd_onclick = function(obj,e)
         {
-        	alert("주문 등록 버튼 실행");
+        	//alert("주문 등록 버튼 실행");
+        	//1. 주문 등록을 위해 입력바든 6개의 값을 데이터셋에 담아 서버로 전송해야한다.
+        	//따라서 데이터 셋을 만들고 사용자가 입력한 6개의 값을 담아주자.
+        	this.ds_regOrd.clearData();
+        	this.ds_regOrd.addRow();
+        	this.ds_regOrd.setColumn(0, "CUST_NM", this.edt_custNm.value);
+        	this.ds_regOrd.setColumn(0, "PHONE", this.edt_phone.value);
+        	this.ds_regOrd.setColumn(0, "BIR_BIZ_NO", this.edt_birBizNo.value);
+        	this.ds_regOrd.setColumn(0, "ADDR", this.edt_addr.value);
+        	this.ds_regOrd.setColumn(0, "CUST_GBCD", this.cbo_custGbNm.value);
+        	this.ds_regOrd.setColumn(0, "ITEM_CD", this.cbo_itemNm.value);
+
+        	trace(this.ds_regOrd.getColumn(0,"CUST_NM"));
+        	trace(this.ds_regOrd.getColumn(0,"PHONE"));
+        	trace(this.ds_regOrd.getColumn(0,"BIR_BIZ_NO"));
+        	trace(this.ds_regOrd.getColumn(0,"ADDR"));
+        	trace(this.ds_regOrd.getColumn(0,"CUST_GBCD"));
+        	trace(this.ds_regOrd.getColumn(0,"ITEM_CD"));
+
+
+        	//세팅할 ds_regOrd 데이터셋을 서버로 전송해서 주문 등록을 해보자.
+        	var strSvcId = "insertOrdList";
+            var strSvcUrl = "insertOrdList.do";
+        	var inData = "ds_regOrd=ds_regOrd";
+        	var outData = ""; //서버로부터 받을 값은 따로 없다.
+        	var strAvg = "";
+        	var callBackFnc ="fnCallback";
+
+        	this.gfnTransaction(strSvcId,
+        						strSvcUrl,
+        						inData,
+        						outData,
+        						strAvg,
+        						callBackFnc);     // 서버로 요청이 감.
+
         };
 
         this.btn_exit_onclick = function(obj,e)
         {
-        	alert("닫기 실행");
+        	//alert("닫기 실행");
+        	this.close();
         };
 
         /*************************************************
@@ -228,8 +268,14 @@
         		case "selectItemList":
         			trace("주문 상품 콤보박스 세팅 완료");
         			break;
+
+        		case "insertOrdList":
+        			alert("주문 등록 완료");
+        			this.close();         //팝업 종료
+        			break;
         	}
         }
+
         });
         
         // Regist UI Components Event
@@ -242,7 +288,8 @@
             this.sta01_02_02.addEventHandler("onclick",this.sta01_02_onclick,this);
             this.sta01_02_02_00.addEventHandler("onclick",this.sta01_02_onclick,this);
             this.sta01_01.addEventHandler("onclick",this.sta01_01_onclick,this);
-            this.cbo_custGb.addEventHandler("onitemchanged",this.cbo_custGb_onitemchanged,this);
+            this.cbo_itemNm.addEventHandler("onitemchanged",this.cbo_itemNm_onitemchanged,this);
+            this.cbo_custGbNm.addEventHandler("onitemchanged",this.cbo_custGb_onitemchanged,this);
             this.btn_exit.addEventHandler("onclick",this.btn_exit_onclick,this);
             this.btn_regOrd.addEventHandler("onclick",this.btn_regOrd_onclick,this);
         };

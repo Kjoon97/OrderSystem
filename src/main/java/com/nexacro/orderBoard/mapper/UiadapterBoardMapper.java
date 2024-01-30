@@ -27,6 +27,12 @@ import com.nexacro.orderBoard.object.Board;
 @Mapper
 public interface UiadapterBoardMapper {
 	
+	public void insertCust(Map<String, Object> ds_regOrd);
+	
+	public String checkCustDup(Map<String,Object> ds_regOrd);
+	
+	public void insertOrdList(Map<String,Object> ds_regOrd);
+	
 	public ArrayList<Map<String,Object>> selectItemList();
 	
 	public ArrayList<Map<String,Object>> selectOrdList(Map<String,Object> ds_searchList);

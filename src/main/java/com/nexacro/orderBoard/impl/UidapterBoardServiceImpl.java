@@ -38,6 +38,29 @@ public class UidapterBoardServiceImpl implements UidapterBoardService {
 	private SqlSessionTemplate sqlSession;
 	
 	@Override
+	public void insertOrdList(Map<String, Object> ds_regOrd) {
+		// TODO Auto-generated method stub
+		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);
+		
+		//1. 작업하기에 앞서 해당 고객이 이미 기존에 TB_CUST 테이블에 있는 경우. 중복으로 insert하는 경우가 생기면 안된다.
+		// 	 따라서 고객 명, 휴대폰 번호, 사업자 번호, 주소가 일치하는 고객 코드가 있을 경우 
+		// 	 INSERT 하지 않고 고객이 없을 경우만 INSERT 
+		
+		String custCode = mapper.checkCustDup(ds_regOrd);
+		ds_regOrd.put("CUST_CD", custCode);
+		
+		if("".equals(custCode) || custCode == null) { //중복체크 시 TB_CUST 테이블에 고객이 없다면 
+			//신규 고객 등록. 
+			mapper.insertCust(ds_regOrd);
+			custCode = mapper.checkCustDup(ds_regOrd);
+			ds_regOrd.put("CUST_CD", custCode);
+		}else {
+			//이미 TB_CUST에 등록된 고객이므로 INSERT할 필요가 없다. 
+		}
+		mapper.insertOrdList(ds_regOrd);
+	}
+	
+	@Override
 	public ArrayList<Map<String, Object>> selectItemList() {
 		// TODO Auto-generated method stub
 		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);

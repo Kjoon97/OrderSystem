@@ -24,6 +24,8 @@ import com.nexacro.orderBoard.object.Board;
  */
 public interface UidapterBoardService {
 	
+	void insertOrdList(Map<String,Object> ds_regOrd);
+	
 	ArrayList<Map<String,Object>> selectItemList();
 	
 	ArrayList<Map<String,Object>> selectOrdList(Map<String,Object> ds_searchList);
