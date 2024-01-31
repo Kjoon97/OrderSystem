@@ -26,6 +26,8 @@ import com.nexacro.orderBoard.object.Board;
  */
 @Mapper
 public interface UiadapterBoardMapper {
+
+	public void updateOrd(Map<String, Object> ds_updOrd);
 	
 	public void insertCust(Map<String, Object> ds_regOrd);
 	

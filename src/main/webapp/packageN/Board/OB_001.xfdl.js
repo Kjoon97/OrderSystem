@@ -262,7 +262,12 @@
 
         this.btn_updOrd_onclick = function(obj,e)
         {
-        	alert("주문 수정 팝업 오픈");
+        	//alert("주문 수정 팝업 오픈");
+        	var ordNo = this.ds_list.getColumn(this.ds_list.rowposition,"ORD_NO"); //그리드에서 선택한 컬럼의 ord_no값.
+        	var oArg ={ordNo:ordNo};  //(우)가 위에 가져온 데이터 값, (좌)가 자식창(팝업창)에서 사용할 데이터의 변수명.
+        	var oOption = {};
+        	var sPopupCallBack = "fnPopupCallback"; //팝업창을 닫을 때 후처리를 하기 위한 함수를 지정한다.
+        	this.gfnOpenPopup("popup","Board::OB_001_02.xfdl", oArg, sPopupCallBack, oOption);
         };
 
         this.btn_delOrd_onclick = function(obj,e)

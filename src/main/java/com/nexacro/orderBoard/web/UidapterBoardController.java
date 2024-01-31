@@ -50,6 +50,15 @@ public class UidapterBoardController {
 	@Autowired(required = true)
 	private UidapterBoardService uidapterSampleService;
 
+	@RequestMapping(value = "/orderBoard/updateOrdList.do")
+	public NexacroResult updateOrdList(@ParamDataSet(name="ds_updOrd") Map<String, Object> ds_updOrd) throws NexacroException {   //001이라는 값을 담은 ds_search
+		NexacroResult result = new NexacroResult();
+		
+		uidapterSampleService.updateOrdList(ds_updOrd);  
+	
+		return result;
+	}	
+	
 	@RequestMapping(value = "/orderBoard/insertOrdList.do")
 	public NexacroResult insertOrdList(@ParamDataSet(name="ds_regOrd") Map<String, Object> ds_regOrd) throws NexacroException {   //001이라는 값을 담은 ds_search
 		NexacroResult result = new NexacroResult();

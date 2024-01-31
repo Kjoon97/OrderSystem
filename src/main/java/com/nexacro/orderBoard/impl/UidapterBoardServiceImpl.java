@@ -37,6 +37,14 @@ public class UidapterBoardServiceImpl implements UidapterBoardService {
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	
+	@Override
+	public void updateOrdList(Map<String, Object> ds_updOrd) {
+		// TODO Auto-generated method stub
+		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);
+		mapper.updateOrd(ds_updOrd);
+	}
+	
 	@Override
 	public void insertOrdList(Map<String, Object> ds_regOrd) {
 		// TODO Auto-generated method stub

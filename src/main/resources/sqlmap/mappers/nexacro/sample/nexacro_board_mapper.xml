@@ -5,7 +5,12 @@
 <mapper namespace="com.nexacro.orderBoard.mapper.UiadapterBoardMapper">
 	
     <!--  POJO -->
-    
+    <update id="updateOrd" parameterType="java.util.Map">
+		UPDATE TB_ORD
+		  SET ORD_STAT_CD =#{ORD_STAT_CD}
+		  ,   ITEM_CD =#{ITEM_CD}
+		WHERE ORD_NO =#{ORD_NO} 
+    </update>    
     
     
     <select id="checkCustDup" parameterType="java.util.Map" resultType="String">
