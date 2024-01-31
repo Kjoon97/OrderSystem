@@ -26,6 +26,8 @@ import com.nexacro.orderBoard.object.Board;
  */
 @Mapper
 public interface UiadapterBoardMapper {
+	
+	public void deleteOrd(Map<String, Object> ds_delList);
 
 	public void updateOrd(Map<String, Object> ds_updOrd);
 	

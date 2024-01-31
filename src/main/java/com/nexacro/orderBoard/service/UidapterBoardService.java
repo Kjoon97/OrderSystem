@@ -24,6 +24,8 @@ import com.nexacro.orderBoard.object.Board;
  */
 public interface UidapterBoardService {
 	
+	void deleteOrdList(Map<String,Object> ds_delList);
+	
 	void updateOrdList(Map<String,Object> ds_updOrd);
 	
 	void insertOrdList(Map<String,Object> ds_regOrd);

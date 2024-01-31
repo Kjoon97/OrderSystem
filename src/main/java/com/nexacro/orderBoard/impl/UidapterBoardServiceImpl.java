@@ -37,6 +37,12 @@ public class UidapterBoardServiceImpl implements UidapterBoardService {
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	@Override
+	public void deleteOrdList(Map<String, Object> ds_delList) {
+		// TODO Auto-generated method stub
+		UiadapterBoardMapper mapper = sqlSession.getMapper(UiadapterBoardMapper.class);
+		mapper.deleteOrd(ds_delList);
+	}
 	
 	@Override
 	public void updateOrdList(Map<String, Object> ds_updOrd) {

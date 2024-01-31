@@ -5,6 +5,11 @@
 <mapper namespace="com.nexacro.orderBoard.mapper.UiadapterBoardMapper">
 	
     <!--  POJO -->
+    <delete id="deleteOrd" parameterType="java.util.Map">
+		DELETE FROM TB_ORD
+		WHERE ORD_NO =#{ORD_NO}
+    </delete>        
+    
     <update id="updateOrd" parameterType="java.util.Map">
 		UPDATE TB_ORD
 		  SET ORD_STAT_CD =#{ORD_STAT_CD}

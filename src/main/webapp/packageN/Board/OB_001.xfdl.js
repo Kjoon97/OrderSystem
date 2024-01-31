@@ -37,6 +37,11 @@
             obj = new Dataset("ds_list", this);
             obj._setContents("<ColumnInfo><Column id=\"ORD_NO\" type=\"STRING\" size=\"256\"/><Column id=\"ORD_STAT_NM\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_NO\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_NM\" type=\"STRING\" size=\"256\"/><Column id=\"CUST_GBCD_NM\" type=\"STRING\" size=\"256\"/><Column id=\"PHONE\" type=\"STRING\" size=\"256\"/><Column id=\"ADDR\" type=\"STRING\" size=\"256\"/><Column id=\"ITEM_NM\" type=\"STRING\" size=\"256\"/><Column id=\"REG_DT\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("ds_delList", this);
+            obj._setContents("<ColumnInfo><Column id=\"ORD_NO\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
             
             // UI Components Initialize
             obj = new Static("sta02","104","1","841","85",null,null,null,null,null,null,this);
@@ -272,7 +277,30 @@
 
         this.btn_delOrd_onclick = function(obj,e)
         {
-        	alert("주문 삭제 진행");
+        	//alert("주문 삭제 진행");
+        	var ordNo = this.ds_list.getColumn(this.ds_list.rowposition, "ORD_NO"); //사용자가 클릭한 행의 ORD_NO 가져오기.
+        	//alert(ordNo);
+
+        	//서버로 전송하기 위한 데이터셋 세팅
+        	this.ds_delList.clearData();
+        	this.ds_delList.addRow();
+        	this.ds_delList.setColumn(0, "ORD_NO", ordNo);
+
+        	//서버로 deleteOrdList.do 라는 URL 요청에 ds_delList 값을 담아 전송해보겠습니다.
+        	var strSvcId = "deleteOrdLList";
+            var strSvcUrl = "deleteOrdList.do";
+        	var inData = "ds_delList=ds_delList";
+        	var outData = "";           //서버로부터 받을 값은 따로 없음.
+        	var strAvg = "";
+        	var callBackFnc ="fnCallback";
+
+        	this.gfnTransaction(strSvcId,
+        						strSvcUrl,
+        						inData,
+        						outData,
+        						strAvg,
+        						callBackFnc);     // 서버로 요청이 감.
+
         };
 
         this.grd_ordList_oncelldblclick = function(obj,e)
@@ -295,6 +323,10 @@
         *************************************************************************************/
         this.fnCallback = function(svcID, errorCode, errorMsg)
         {
+        	if(errorCode < 0){  //에러코드는 거의 대부분 음수
+        		alert("작업 실패 코드 : " + errorCode + "\n" + errorMsg);
+        		return 0;
+        	}
         	switch(svcID)  //svcID: 트랜잭션 아이디.
         	{
         		case "selectCommonCode":
@@ -302,8 +334,10 @@
         			this.ds_ordStatCombo.setColumn(0,"CD_VAL1","");
         			this.ds_ordStatCombo.setColumn(0,"CD_NM1","전체");
         			break;
+        		case "deleteOrdLList":
+        			alert("삭제 완료");
+        			break;
         	}
-
         }
 
         });
